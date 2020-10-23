@@ -55,3 +55,15 @@ db.getCollection('CollectionA').aggregate([
     } }
 ]
 )
+hoac
+db.getCollection('CollectionA').aggregate([
+   {
+     $lookup:
+       {
+         "from": "CollectionB",
+        "localField": "description.b_id",
+        "foreignField": "_id",
+        "as": "description.CollectionB"
+       }
+  } ]
+)
