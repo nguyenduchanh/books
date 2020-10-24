@@ -72,3 +72,53 @@ Hoặc
     )
 ```
 # Ví dụ 2
+Cho collection "CollectionC" có cấu trúc như sau
+ ```sh
+  {
+    "_id" : ObjectId("582d43d18ec3f432f3260682"),
+    "description" : [ 
+        ObjectId("58345e0e996d340bd8126149"), 
+        ObjectId("5836bc0b291918eb42966320"), 
+        ObjectId("5836bc0b291918eb42966321")
+    ]
+  }
+```
+Cho collection "CollectionD" có cấu trúc như sau
+ ```sh
+  {
+    "_id" : ObjectId("58345e0e996d340bd8126149"),
+    "name" : "1 object"
+}
+```
+Trong "CollectionC" có trường "description" là một mảng các ObjectId để join với "_id" trong "CollectionD"
+Collection sau khi join có cấu trúc như sau:
+ ```sh
+  {
+    "_id" : ObjectId("582d43d18ec3f432f3260682"),
+    "description" : [ 
+        ObjectId("58345e0e996d340bd8126149"), 
+        ObjectId("5836bc0b291918eb42966320"), 
+        ObjectId("5836bc0b291918eb42966321")
+    ],
+    "CollectionD" : [ 
+        {
+            "_id" : ObjectId("58345e0e996d340bd8126149"),
+            "name" : "1 object"
+        }
+    ]
+}
+```
+Dùng Mongo shell thì câu lệnh join sẽ như sau:
+ ```sh
+ db.getCollection('CollectionC').aggregate([
+   {
+      $lookup:
+         {
+            from: "CollectionD",
+            localField: "description",
+            foreignField: "_id",
+            as: "CollectionD"
+        }
+   }
+])
+```
