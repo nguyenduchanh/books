@@ -1,124 +1,131 @@
-# Ví dụ về join 2 collection trong Mongodb
+# Map 2 array of object in collection in Mongodb
 # Ví dụ 1 
 Cho collection "CollectionA" có cấu trúc như sau
  ```sh
   {
-    "_id" : ObjectId("582d43d18ec3f432f3260682"),
-    "description" : [ 
+    "_id" : ObjectId("5f9b89200186bed4f326ffa2"),
+    "product" : [ 
         {
-            "b_id" : ObjectId("58345e0e996d340bd8126149")
+            "productId" : ObjectId("5f9b89200186bed4f326ffa3"),
+            "value" : 1
         }, 
         {
-            "b_id" : ObjectId("5836bc0b291918eb42966320")
+            "productId" : ObjectId("5f9b89200186bed4f326ffa4"),
+            "value" : 2
         }, 
         {
-            "b_id" : ObjectId("5836bc0b291918eb42966321")
+            "productId" : ObjectId("5f9b89200186bed4f326ffa5"),
+            "value" : 3
+        }
+    ],
+    "product2" : [ 
+        {
+            "productId" : ObjectId("5f9b89200186bed4f326ffa3"),
+            "name" : "first",
+            "anotherValue" : 1
+        }, 
+        {
+            "productId" : ObjectId("5f9b89200186bed4f326ffa4"),
+            "name" : "second",
+            "anotherValue" : 2
+        }, 
+        {
+            "productId" : ObjectId("5f9b89200186bed4f326ffa5"),
+            "name" : "third",
+            "anotherValue" : 3
         }
     ]
 }
 ```
-Collection "CollectionB" có cấu trúc như sau
+Trong "CollectionA" có 2 array of object. Cần join các object trong array "product" và "product2" có cùng productId.
+kết quả là một dữ liệu có cấu trúc như sau
 
  ```sh
   {
-    "_id" : ObjectId("58345e0e996d340bd8126149"),
-    "name" : "1 object"
-  }
+    "_id" : ObjectId("5f9b89200186bed4f326ffa2"),
+    "product" : [ 
+        {
+            "productId" : ObjectId("5f9b89200186bed4f326ffa3"),
+            "value" : 1
+        }, 
+        {
+            "productId" : ObjectId("5f9b89200186bed4f326ffa4"),
+            "value" : 2
+        }, 
+        {
+            "productId" : ObjectId("5f9b89200186bed4f326ffa5"),
+            "value" : 3
+        }
+    ],
+    "product2" : [ 
+        {
+            "productId" : ObjectId("5f9b89200186bed4f326ffa3"),
+            "name" : "first",
+            "anotherValue" : 1
+        }, 
+        {
+            "productId" : ObjectId("5f9b89200186bed4f326ffa4"),
+            "name" : "second",
+            "anotherValue" : 2
+        }, 
+        {
+            "productId" : ObjectId("5f9b89200186bed4f326ffa5"),
+            "name" : "third",
+            "anotherValue" : 3
+        }
+    ],
+    "fullProduct" : [ 
+        {
+            "productId" : ObjectId("5f9b89200186bed4f326ffa3"),
+            "value" : 1,
+            "name" : "first",
+            "anotherValue" : 1
+        }, 
+        {
+            "productId" : ObjectId("5f9b89200186bed4f326ffa4"),
+            "value" : 2,
+            "name" : "second",
+            "anotherValue" : 2
+        }, 
+        {
+            "productId" : ObjectId("5f9b89200186bed4f326ffa5"),
+            "value" : 3,
+            "name" : "third",
+            "anotherValue" : 3
+        }
+    ]
+}
 ```
-Trong "CollectionA" có trường "description" là một mảng các object chứa các "b_id" để join với "_id" trong "CollectionB"
 
-Collection sau khi join có cấu trúc như sau:
+Dùng Mongo shell thì câu lệnh join sẽ như sau:
  ```sh
-  {
-     "_id" : ObjectId("582d43d18ec3f432f3260682"),
-    "description" : {
-        "CollectionB" : [ 
-            {
-                "_id" : ObjectId("58345e0e996d340bd8126149"),
-                "name" : "1 object"
-            }
-        ]
+db.getCollection('CollectionB').aggregate([ {
+    $addFields: {
+      fullProduct: {
+        $map: {
+          input: "$product",
+          as: "one",
+          in: {
+            $mergeObjects: [
+              "$$one",
+              {
+                $arrayElemAt: [
+                  {
+                    $filter: {
+                      input: "$product2",
+                      as: "two",
+                      cond: { $eq: ["$$two.productId", "$$one.productId"]}
+                    }
+                  },
+                  0
+                ]
+              }
+            ]
+          }
+        }
+      }
     }
   }
-```
-
-Dùng Mongo shell thì câu lệnh join sẽ như sau:
- ```sh
- db.getCollection('CollectionA').aggregate([
-    { "$addFields": { 
-            "description": { "$ifNull" : [ "$description", [ ] ] }    
-        } },
-        { "$lookup": {
-            "from": "CollectionB",
-            "localField": "description.b_id",
-            "foreignField": "_id",
-            "as": "description.CollectionB"
-        } }
-    ]
-    )
-```
-Hoặc
- ```sh
-    db.getCollection('CollectionA').aggregate([
-     {
-       $lookup:
-         {
-           "from": "CollectionB",
-          "localField": "description.b_id",
-          "foreignField": "_id",
-          "as": "description.CollectionB"
-         }
-    } ]
-    )
-```
-# Ví dụ 2
-Cho collection "CollectionC" có cấu trúc như sau
- ```sh
-  {
-    "_id" : ObjectId("582d43d18ec3f432f3260682"),
-    "description" : [ 
-        ObjectId("58345e0e996d340bd8126149"), 
-        ObjectId("5836bc0b291918eb42966320"), 
-        ObjectId("5836bc0b291918eb42966321")
-    ]
-  }
-```
-Cho collection "CollectionD" có cấu trúc như sau
- ```sh
-  {
-    "_id" : ObjectId("58345e0e996d340bd8126149"),
-    "name" : "1 object"
-}
-```
-Trong "CollectionC" có trường "description" là một mảng các ObjectId để join với "_id" trong "CollectionD"
-Collection sau khi join có cấu trúc như sau:
- ```sh
-  {
-    "_id" : ObjectId("582d43d18ec3f432f3260682"),
-    "description" : [ 
-        ObjectId("58345e0e996d340bd8126149"), 
-        ObjectId("5836bc0b291918eb42966320"), 
-        ObjectId("5836bc0b291918eb42966321")
-    ],
-    "CollectionD" : [ 
-        {
-            "_id" : ObjectId("58345e0e996d340bd8126149"),
-            "name" : "1 object"
-        }
-    ]
-}
-```
-Dùng Mongo shell thì câu lệnh join sẽ như sau:
- ```sh
- db.getCollection('CollectionC').aggregate([
-   {
-      $lookup:
-         {
-            from: "CollectionD",
-            localField: "description",
-            foreignField: "_id",
-            as: "CollectionD"
-        }
-   }
 ])
 ```
+
