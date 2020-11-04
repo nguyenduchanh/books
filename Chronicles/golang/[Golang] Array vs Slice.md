@@ -41,11 +41,11 @@ Len:  2 ;capacity:  5
 - Cách tốt nhất:  dùng hàm copy([]dest, []source) để copy sang 1 slice khác.
 ```
  arr1 := [5]string{"string1", "string2", "string3", "string4", "string5"}
-	arr2 := arr1[0:2]
-	slice1 := make([]string, len(arr2))
-	copy(slice1, arr2)
+ arr2 := arr1[0:2]
+ slice1 := make([]string, len(arr2))
+ copy(slice1, arr2)
 
-	fmt.Println(slice1)
-	fmt.Println("Len: ", len(slice1), ";capacity: ", cap(slice1))
+ fmt.Println(slice1)
+ fmt.Println("Len: ", len(slice1), ";capacity: ", cap(slice1))
 ```
  
