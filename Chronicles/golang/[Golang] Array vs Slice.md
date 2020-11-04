@@ -23,8 +23,29 @@
    - Capacity là độ dài của mảng mà slice đang link tới
  - Thêm vào slice dùng hàm append(). Khi array đầy, Go tạo một array mới dài gấp đôi array cũ và gán vào
  ### Tối ưu hóa memory
+ - Việc tạo slice từ arrat thực chất là link tới array đó
+ - Cùng xem ví dụ sau đây
+ ```
+ arr1 := [5]string{"string1", "string2", "string3", "string4", "string5"}
+ slice1 := arr1[0:2]
  
-     
+ fmt.Println(slice1)
+ fmt.Println("Len: ", len(slice1), ";capacity: ", cap(slice1))
+ ```
+- Kết quả là
+```
+[string1 string2]
+Len:  2 ;capacity:  5
+```
+- Mặc dù slice1 chỉ dùng "string1" và "string2" nhưng thực tế vẫn link đến arr1. arr1 vẫn được đánh dấu là đang sử dụng nên không bị Garbage Collector của Go dọn nên tốn ram
+- Cách tốt nhất:  dùng hàm copy([]dest, []source) để copy sang 1 slice khác.
+```
+ arr1 := [5]string{"string1", "string2", "string3", "string4", "string5"}
+	arr2 := arr1[0:2]
+	slice1 := make([]string, len(arr2))
+	copy(slice1, arr2)
 
-
+	fmt.Println(slice1)
+	fmt.Println("Len: ", len(slice1), ";capacity: ", cap(slice1))
+```
  
