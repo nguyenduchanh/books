@@ -48,4 +48,4 @@ Len:  2 ;capacity:  5
  fmt.Println(slice1)
  fmt.Println("Len: ", len(slice1), ";capacity: ", cap(slice1))
 ```
- 
+Nguồn [[Golang] Array và slice](https://minhphong306.wordpress.com/2020/03/26/golang-array-va-slice/)
