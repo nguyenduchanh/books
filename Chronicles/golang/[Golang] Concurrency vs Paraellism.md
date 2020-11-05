@@ -89,4 +89,5 @@ func main() {
                 | 1  |        0         <--  0  -->        0          |  đọc
                 | 2  |      0 + 1 = 1    |   0   |      0 + 1 = 1     |
                 | 3  |        1         <--  1  -->        1          |  ghi
-- 
+- Ví dụ trên có 2 goroutines cùng xử lý việc tăng giá trị biến x thêm 1 đơn vị. Để làm điều này goroutines cần xử lý 3 bước: đọc giá trị hiện tại của biến x, tăng thêm 1 và ghi lại biến x.
+- Chính xác thì thì G1 thay đổi xong thì G2 mới được đọc ra
