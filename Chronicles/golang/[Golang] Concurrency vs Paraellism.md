@@ -84,7 +84,9 @@ func main() {
 - Ví dụ trên tạo 1000 goroutines khác nhau. Mỗi goroutines có nhiệm vụ tăng giá trị x thêm 1. Kết quả mong muốn là 1000. nhưng kết quả nhận được lúc là 1000, líc là 981 ...
 - Nguyên dân là đoạn code trên bị race condition, tức là  tình trạng các tiến trình cùng truy cập 1 tài nguyên cà cùng thay đổi chúng. nhưng việc truy cập lại không có trình tự, dẫn đên kết qủa sai lệch với mong muốn.
 
-                | G1                |         G2                     |
-                | ------------------| ------------------------------ |
-                | `hugo`            | Build your website.            |
-                | `hugo serve -w`   | View your website.             |
+                |    |       G1          |   x   |         G2         |
+                |    | ------------------|       | -------------------|
+                | 1  |        0         <--  0  -->        0          |  đọc
+                | 2  |      0 + 1 = 1    |   0   |      0 + 1 = 1     |
+                | 3  |        1         <--  1  -->        1          |  ghi
+- 
