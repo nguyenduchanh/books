@@ -1,0 +1,36 @@
+# Hotel checking in
+- Thanks you for calling Great Hotel. How may I help you?
+- I would like to rent a room. But how much do you charge at night?
+- Our price start at $79 a night for a standard room.
+- Can you reserve a room for me?
+- Sure. What day are you coming in?
+-I wil be checking in on August 3rd.
+- How many days do you need the room for?
+I will need at for three night.
+-Ok, I have you coming in on the 3rd of August and checking out on the 6th, Is that correct?
+- Yes
+- How many total adults?
+- Two adjults and two kids
+- How old are the children?
+- 10 and 12
+- Would you like one room or two room?
+- just one is fine
+- would you like a smoking room or non smoking room?
+- non smoking room please
+- Can I have your last name?
+- Park 
+- Can I have your first name?
+- Young. that Y O U N G
+- Let me confirm you information Mr PArk. I have on non smorking with 2 adults and 2 chikdren from August 3rd to August 6th. Is this correct?
+- Yes
+- the total comes to $256,78. Can I get your credit card number?
+- Sure. It is 11 111 1111
+- What is name on the credit card
+- Young Park
+- I have the room reserved for you. If you need to cancel, please call us 24 hour before you check in date. Failure to cancel will result in a one day charge on your credit card. Is there anything else I can do for you?
+- Yes, one more question. What time can we check in?
+- We can check you in by 2:00 pm
+- Greate. Thank you
+- Thank you and have a grate day
+- Thanhks, bye
+- good bye
